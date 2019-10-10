@@ -1,15 +1,9 @@
-FROM golang:alpine as builder
-RUN apk add --update git
-RUN go get github.com/txthinking/brook/cli/brook
-
-
-FROM chenhw2/alpine:base
-LABEL MAINTAINER CHENHW2 <https://github.com/chenhw2>
+FROM alpine:3.10 AS dist
 
 # /usr/bin/brook
-COPY --from=builder /go/bin /usr/bin
-
-USER nobody
+RUN wget -O /usr/bin/brook https://github.com/txthinking/brook/releases/download/v20190601/brook \
+    && chmod +x /usr/bin/brook
+    
 ENV ARGS="server -l :6060 -p password"
 
 CMD /usr/bin/brook ${ARGS}
